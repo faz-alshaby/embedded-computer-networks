@@ -39,7 +39,7 @@ int main()
     HAL_GPIO_TogglePin(LED_PORT, LED_PIN);
     
     // wait for 1 second
-    HAL_Delay(1000);
+    HAL_Delay(250);
   }
 }
 
