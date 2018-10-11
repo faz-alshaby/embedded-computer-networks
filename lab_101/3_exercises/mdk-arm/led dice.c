@@ -1,10 +1,3 @@
-/*
- * a_traffic_lights.c
- *
- * this is the main application skeleton for the student exercises in task 3
- *
- */
-
 // include the hal drivers
 #include "stm32f7xx_hal.h"
 
