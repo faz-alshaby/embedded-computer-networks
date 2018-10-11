@@ -19,7 +19,8 @@
 #include "gpio.h"
 
 // map the led to GPIO PI1 (again, this is the inbuilt led)
-gpio_pin_t led = {PI_1, GPIOI, GPIO_PIN_1};
+gpio_pin_t red_led = {PI_1, GPIOI, GPIO_PIN_1};
+
 
 // this is the main method
 int main()
@@ -27,18 +28,23 @@ int main()
   // we need to initialise the hal library and set up the SystemCoreClock 
   // properly
   HAL_Init();
+	// Now contained in a separate "clock" library to avoid repetition
+	
+	// Now contained in a separate "gpio" library to avoid repetition
   init_sysclk_216MHz();
   
   // initialise the gpio pins
-  init_gpio(led, OUTPUT);
+  init_gpio(red_led, OUTPUT);
   
   // loop forever ...
   while(1)
   {
     // toggle the led on the gpio pin
-    toggle_gpio(led);
+		// Now contained in a separate "gpio" library to avoid repetition
+    toggle_gpio(red_led);
     
-    // wait for 1 second
-    HAL_Delay(1000);
+    // wait for 3 seconds
+    HAL_Delay(3000);
+		
   }
 }
