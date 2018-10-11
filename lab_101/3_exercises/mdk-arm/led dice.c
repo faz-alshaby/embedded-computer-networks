@@ -22,6 +22,7 @@ int main()
   // we need to initialise the hal library and set up the SystemCoreClock 
   // properly
   HAL_Init();
+	init_random();
 	// Now contained in a separate "clock" library to avoid repetition
 	
 	// Now contained in a separate "gpio" library to avoid repetition
