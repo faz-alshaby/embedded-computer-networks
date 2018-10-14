@@ -43,39 +43,39 @@ int main()
 		uint32_t rnd = (get_random_int() % 6) + 1;
 		if (rnd == 1)
 		{
-			write_gpio (botrtlt_led4, HIGH);
+			write_gpio (center_led2, HIGH);
 			HAL_Delay(1000);
 		}
 		if (rnd == 2)
 		{
-			write_gpio (mid_led1, HIGH);
+			write_gpio (botlftrt_led3, HIGH);
 			HAL_Delay(1000);
 		}
 		if (rnd == 3)
 		{
-			write_gpio (botrtlt_led4, HIGH);
+			write_gpio (center_led2, HIGH);
 			write_gpio (botlftrt_led3, HIGH);
 			HAL_Delay(1000);
 		}
 		if (rnd == 4)
 		{
-			write_gpio (mid_led1, HIGH);
+			write_gpio (botrtlt_led4, HIGH);
 			write_gpio (botlftrt_led3, HIGH);
 			HAL_Delay(1000);
 		}
 		if (rnd == 5)
 		{
-		write_gpio (botrtlt_led4, HIGH);
-		write_gpio (mid_led1, HIGH);
-		write_gpio (botlftrt_led3, HIGH);
-		HAL_Delay(1000);
+			write_gpio (botrtlt_led4, HIGH);
+			write_gpio (botlftrt_led3, HIGH);
+			write_gpio (center_led2, HIGH);
+
+			HAL_Delay(1000);
 		}
 		if (rnd == 6)
 		{
 			write_gpio (botrtlt_led4, HIGH);
 			write_gpio (botlftrt_led3, HIGH);
 			write_gpio (mid_led1, HIGH);
-			write_gpio (center_led2, HIGH);
 			HAL_Delay(1000);			
 		}			   
     // turn off LED
