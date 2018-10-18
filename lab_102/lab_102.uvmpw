@@ -10,6 +10,7 @@
   <project>
     <PathAndName>.\1_lcd_example\mdk-arm\lcd_example.uvprojx</PathAndName>
     <NodeIsActive>1</NodeIsActive>
+    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
@@ -18,12 +19,10 @@
 
   <project>
     <PathAndName>.\3_lcd_temperature_display\mdk-arm\lcd_temperature_display.uvprojx</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
   <project>
     <PathAndName>.\4_lcd_environment_monitoring\mdk-arm\lcd_environment_monitor.uvprojx</PathAndName>
-    <NodeIsExpanded>1</NodeIsExpanded>
   </project>
 
 </ProjectWorkspace>

@@ -4,7 +4,7 @@
  * this is the main lcd application
  *
  * author:    Dr. Alex Shenfield
- * date:      04/09/2018
+ * date:      04/09/2017
  * purpose:   55-604481 embedded computer networks : lab 102
  */
 
@@ -15,7 +15,7 @@
 #include "pinmappings.h"
 #include "clock.h"
 #include "stm32746g_discovery_lcd.h"
-
+#include "adc.h"
 // LCD DEFINES
 
 // define a message boarder (note the lcd is 28 characters wide using Font24)
@@ -29,7 +29,11 @@ const char * welcome_message[2] =
 };
 
 // CODE
+gpio_pin_t pot = {PF_8, GPIOF, GPIO_PIN_8};
 
+
+// declare our utility functions
+void configure_gpio(void);
 // this is the main method
 int main()
 {
@@ -63,16 +67,26 @@ int main()
   // display an "uptime" counter
   BSP_LCD_DisplayStringAtLine(5, (uint8_t *)"Current uptime =");
   int counter = 0;
+	init_adc (pot);
+	
   while(1)
-  {
+  { 
+		
+		uint16_t adc_val = read_adc(pot);
+ 
+		// delay for the appropriate time
+    HAL_Delay(adc_val / 2);
+		
     // format a string based around the uptime counter
     char str[20];
-    sprintf(str, "%d s", counter++);
-    
-    // print the message to the lcd
+    sprintf(str, "ADC= %4d", adc_val);
+        
+		// print the message to the lcd
     BSP_LCD_ClearStringLine(6);
     BSP_LCD_DisplayStringAtLine(6, (uint8_t *)str);
     
     HAL_Delay(1000);
+		
+
   }
 }
