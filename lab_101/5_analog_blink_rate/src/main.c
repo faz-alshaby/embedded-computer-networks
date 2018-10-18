@@ -53,8 +53,7 @@ int main()
     
     // read the potentiometer and echo that value to the terminal
     uint16_t adc_val = read_adc(pot);
-    printf("potentiometer value = %d : delay time = %d ms\r\n", 
-      adc_val, (adc_val/2));
+    printf("potentiometer value = %d : delay time = %d ms\r\n", adc_val, (adc_val/2));
     
     // delay for the appropriate time
     HAL_Delay(adc_val / 2);

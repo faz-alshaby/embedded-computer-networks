@@ -1,0 +1,36 @@
+// include the hal drivers
+#include "stm32f7xx_hal.h"
+
+// include the shu bsp libraries for the stm32f7 discovery board
+#include "pinmappings.h"
+#include "clock.h"
+#include "gpio.h"
+
+// Initialise the pins
+gpio_pin_t led = {PI_1, GPIOI, GPIO_PIN_1};
+gpio_pin_t pb1 = {PA_8, GPIOA, GPIO_PIN_8};
+
+int main()
+{
+	// initialise the HAL library and setup system clock
+
+	HAL_Init();
+	init_sysclk_216MHz();
+
+	// initialise the gpio pins
+	init_gpio(led, OUTPUT);
+	init_gpio(pb1, INPUT);
+
+	while(1)
+	{
+		if(read_gpio(pb1))
+		{
+			write_gpio(led, HIGH);
+		}
+		else
+		{
+			write_gpio(led, LOW);
+		}
+	}
+}
+
