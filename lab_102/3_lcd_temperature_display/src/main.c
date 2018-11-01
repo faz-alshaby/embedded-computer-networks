@@ -19,7 +19,8 @@ const char * welcome_message[2] =
 };
 
 // Initil pin for potentiometer
-gpio_pin_t temperature_sensor = {PA_0, GPIOA, GPIO_PIN_0};
+gpio_pin_t temp_sensor = {PF_6, GPIOF, GPIO_PIN_6};
+gpio_pin_t pot = {PA_0, GPIOA, GPIO_PIN_0};
 
 // this is the main method
 int main()
@@ -29,6 +30,10 @@ int main()
 	HAL_Init();
 	init_sysclk_216MHz();
 
+	// init the adc here
+	init_adc(temp_sensor);
+	init_adc(pot);
+	
 	// initialise the lcd
 	BSP_LCD_Init();
 	BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, SDRAM_DEVICE_ADDR);
@@ -51,30 +56,33 @@ int main()
 	// delay a little ...
 	HAL_Delay(5000);
 	int counter = 0;
-	float temp;
-	float voltage;
-	init_adc(temperature_sensor);
 
 	while(1)
 	{
-		uint16_t adc_val = read_adc(temperature_sensor );
-		voltage = read_adc / 4095.0 * 3.3;
-		temp = (voltage - 500) / 10;
+		uint16_t adc_val = read_adc(temp_sensor);
+		float voltage = (3.3 * (adc_val / 4095.0)) * 1000;
+		float temperature = (voltage  - 500) / 10.0;
 
 		// format a string based around the uptime counter
-		char str[20];
+		char str[25];
 		sprintf(str, "Current uptime = %u", (HAL_GetTick() / 1000));
-		BSP_LCD_DisplayStringAtLine(5, (uint8_t *)str);
 		BSP_LCD_ClearStringLine(5);
 		BSP_LCD_DisplayStringAtLine(5, (uint8_t *)str);
-		char stradc[20];
-		sprintf(stradc, "Temp is = %.2f", temp);
-		BSP_LCD_DisplayStringAtLine(6, (uint8_t *)stradc);
+		char stradc[25];
+		sprintf(stradc, "Temperature = %3.2f", temperature);
 		BSP_LCD_ClearStringLine(6);
 		BSP_LCD_DisplayStringAtLine(6, (uint8_t *)stradc);
 
+		uint16_t pot_val = read_adc(pot);
+		float pot_voltage = (3.3 * (pot_val / 4095.0)) * 1000;
+		char stradc2[25];
+		sprintf(stradc2, "Pot volts = %3.2f", pot_voltage);
+		BSP_LCD_ClearStringLine(8);
+		BSP_LCD_DisplayStringAtLine(8, (uint8_t *)stradc2);
+		
 		HAL_Delay(1000);
 
 
 	}
 }
+
