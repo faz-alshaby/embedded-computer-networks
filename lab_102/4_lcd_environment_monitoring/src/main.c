@@ -39,15 +39,15 @@ int main()
 	BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, SDRAM_DEVICE_ADDR);
 	BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
 
-	// set the background colour to blue and clear the lcd
-	BSP_LCD_SetBackColor(LCD_COLOR_BLUE);
-	BSP_LCD_Clear(LCD_COLOR_BLUE);
+	// set the background colour to black and clear the lcd
+	BSP_LCD_SetBackColor(LCD_COLOR_BLACK);
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
 
 	// set the font to use
 	BSP_LCD_SetFont(&Font24);
 
 	// print the welcome message ...
-	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+	BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
 	BSP_LCD_DisplayStringAtLine(0, (uint8_t *)BOARDER);
 	BSP_LCD_DisplayStringAtLine(1, (uint8_t *)welcome_message[0]);
 	BSP_LCD_DisplayStringAtLine(2, (uint8_t *)welcome_message[1]);
@@ -55,8 +55,7 @@ int main()
 
 	// delay a little ...
 	HAL_Delay(5000);
-	int counter = 0;
-
+	
 	while(1)
 	{
 		uint16_t adc_val = read_adc(temp_sensor);
