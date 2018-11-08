@@ -21,7 +21,7 @@
 // HARDWARE DEFINES
 
 // specify some leds
-gpio_pin_t led1 = {PF_6, GPIOF, GPIO_PIN_6};
+gpio_pin_t led1 = {PF_6, GPIOF, GPIO_PIN_9};
 gpio_pin_t led2 = {PF_7, GPIOF, GPIO_PIN_7};
 gpio_pin_t led3 = {PF_8, GPIOF, GPIO_PIN_8};
 
@@ -101,7 +101,7 @@ void led_3_thread(void const *argument)
   {
     // toggle the second led on the gpio pin
     toggle_gpio(led3);
-    dumb_delay(1000);
+    osDelay(1000);
   }
 }
 
