@@ -6,7 +6,6 @@
 #include "clock.h"
 #include "stm32746g_discovery_lcd.h"
 #include "adc.h"
-#include "gpio.h"
 // LCD DEFINES
 
 // define a message boarder (note the lcd is 28 characters wide using Font24)
@@ -22,19 +21,33 @@ const char * welcome_message[2] =
 // Initil pin for LDR
 gpio_pin_t temp_sensor = {PF_6, GPIOF, GPIO_PIN_6};
 gpio_pin_t LDR = {PA_0, GPIOA, GPIO_PIN_0};
-gpio_pin_t calibration_led = {PI_1, GPIOI, GPIO_PIN_1};
-gpio_pin_t led = {PI_2, GPIOI, GPIO_PIN_2};
+gpio_pin_t calibration_led = {PI_2, GPIOI, GPIO_PIN_2};
 
-// calibration values for LDR
-int sensorMin = 4095;        // minimum sensor value
+// calibration for LDR
+int sensorValue = 0;         // the sensor value
+int sensorMin = 1023;        // minimum sensor value
 int sensorMax = 0;           // maximum sensor value
 
 // this is the main method
 int main()
 {
-	// turn on LED to signal the start of the calibration period:
-	init_gpio(calibration_led, OUTPUT);
-	init_gpio(led, OUTPUT);
+	 // turn on LED to signal the start of the calibration period:
+init_gpio(calibration_led, OUTPUT);  
+  write_gpio(calibration_led, HIGH);
+  // calibrate during the first ten seconds
+  while (millis() < 10000) {
+    sensorValue = analogRead(sensorPin);
+    // record the maximum sensor value
+    if (sensorValue > sensorMax) {
+      sensorMax = sensorValue;
+    }
+    // record the minimum sensor value
+    if (sensorValue < sensorMin) {
+      sensorMin = sensorValue;
+    }
+  }
+  // signal the end of the calibration period
+  write_gpio(calibration_led, LOW);
 	
 	// we need to initialise the hal library and set up the SystemCoreClock
 	// properly
@@ -64,91 +77,33 @@ int main()
 	BSP_LCD_DisplayStringAtLine(2, (uint8_t *)welcome_message[1]);
 	BSP_LCD_DisplayStringAtLine(3, (uint8_t *)BOARDER);
 
-	//// delay a little ...
-	//HAL_Delay(5000);
+	// delay a little ...
+	HAL_Delay(5000);
 	
-	// calibrate ... 
-  write_gpio(calibration_led, HIGH);
-	long prev_time = HAL_GetTick();
-	while(HAL_GetTick() - prev_time < 5000)
-	{		
-		// read the adc
-		uint16_t reading = read_adc(LDR);
-		
-		// check against min and max
-		if(reading > sensorMax)
-		{
-			sensorMax = reading;
-		}
-		if(reading < sensorMin)
-		{
-			sensorMin = reading;
-		}		
-	}
-  write_gpio(calibration_led, LOW);
-	
-	// main loop
 	while(1)
-	{	
-		// UPTIME
-		
+	{
+		uint16_t adc_val = read_adc(temp_sensor);
+		float voltage = (3.3 * (adc_val / 4095.0)) * 1000;
+		float temperature = (voltage  - 500) / 10.0;
+
 		// format a string based around the uptime counter
 		char str[25];
 		sprintf(str, "Current uptime = %u", (HAL_GetTick() / 1000));
 		BSP_LCD_ClearStringLine(5);
 		BSP_LCD_DisplayStringAtLine(5, (uint8_t *)str);
-		
-		// TEMPERATURE
-		
-		// read and convert
-		uint16_t adc_val = read_adc(temp_sensor);
-		float voltage = (3.3 * (adc_val / 4095.0)) * 1000;
-		float temperature = (voltage  - 500) / 10.0;
-		
-		// display
-		char strtmp[25];
-		sprintf(strtmp, "Temperature = %3.2f", temperature);
+		char stradc[25];
+		sprintf(stradc, "Temperature = %3.2f", temperature);
 		BSP_LCD_ClearStringLine(6);
-		BSP_LCD_DisplayStringAtLine(6, (uint8_t *)strtmp);
+		BSP_LCD_DisplayStringAtLine(6, (uint8_t *)stradc);
 
-		// LIGHT
-		
-		// read and remap to a percentage
 		uint16_t LDR_val = read_adc(LDR);
-		float ldr_percent = ((LDR_val - sensorMin) / (float)(sensorMax - sensorMin)) * 100;
-		// float LDR_voltage = (3.3 * (LDR_val / 4095.0)) * 1000;
-		
-		// constrain to between 0 and 100 ...
-		// 
-		if ((ldr_percent) < 0)
-			{
-			ldr_percent = 0;
-		}
-			else if ((ldr_percent) > 100)
-			{
-				ldr_percent = 100;
-			}
-			else if ((ldr_percent) >0 & (ldr_percent)  <50)
-			{
-				write_gpio(led, HIGH);
-			}
-			else if ((ldr_percent) >50 & (ldr_percent)  <=100)
-			{
-				write_gpio(led, LOW);
-			}
-			else
-			{
-				;
-			}
-			
-		
-		// display
-		char strldr[25];
-		sprintf(strldr, "LDR         = %3.2f %%", ldr_percent);
+		float LDR_voltage = (3.3 * (LDR_val / 4095.0)) * 1000;
+		char stradc2[25];
+		sprintf(stradc2, "LDR volts = %3.2f", LDR_voltage);
 		BSP_LCD_ClearStringLine(8);
-		BSP_LCD_DisplayStringAtLine(8, (uint8_t *)strldr);
+		BSP_LCD_DisplayStringAtLine(8, (uint8_t *)stradc2);
 		
-		HAL_Delay(100);
+		HAL_Delay(1000);
 
 
 	}
