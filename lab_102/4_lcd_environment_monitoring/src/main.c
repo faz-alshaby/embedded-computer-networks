@@ -7,8 +7,8 @@
 #include "stm32746g_discovery_lcd.h"
 #include "adc.h"
 #include "gpio.h"
-// LCD DEFINES
 
+// LCD DEFINES
 // define a message boarder (note the lcd is 28 characters wide using Font24)
 #define BOARDER     "****************************"
 
